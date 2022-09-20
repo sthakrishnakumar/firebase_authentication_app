@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_authentication_app/screens/facebook_logged_in_dashboard.dart';
+import 'package:firebase_authentication_app/services/firebase_auth_methods.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatefulWidget {
@@ -19,10 +21,21 @@ class _DashboardState extends State<Dashboard> {
       ),
       body: widget.data == "facebook"
           ? const FacebookDashboard()
-          : Column(
-              children: const [
-                Text('Phone Verified Dashboard'),
-              ],
+          : Padding(
+              padding: const EdgeInsets.only(left: 90),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Phone Verified Dashboard'),
+                  ElevatedButton(
+                    onPressed: () {
+                      FirebaseAuthMethods(FirebaseAuth.instance)
+                          .logOut(context);
+                    },
+                    child: const Text('Log Out'),
+                  )
+                ],
+              ),
             ),
     );
   }

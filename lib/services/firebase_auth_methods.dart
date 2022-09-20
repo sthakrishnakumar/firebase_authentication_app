@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_authentication_app/screens/dashboard.dart';
-import 'package:firebase_authentication_app/screens/facebook_logged_in_dashboard.dart';
 import 'package:firebase_authentication_app/screens/login_screen.dart';
 import 'package:firebase_authentication_app/screens/login_with_phone/otp_page.dart';
 import 'package:firebase_authentication_app/utils/utils.dart';
@@ -34,20 +33,24 @@ class FirebaseAuthMethods {
 
 //Verify OTP
   Future<void> verifyOTP(BuildContext context, String codeValue) async {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: WidgetConstant.verify,
-      smsCode: codeValue,
-    );
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: WidgetConstant.verify,
+        smsCode: codeValue,
+      );
 
-    await _auth.signInWithCredential(credential);
-    // ignore: use_build_context_synchronously
-    snackbar(context, 'OTP Verified Successfully', color: Colors.green);
-    // ignore: use_build_context_synchronously
-    pushNavigation(
-        context,
-        Dashboard(
-          data: 'Phone Verified Dashboard',
-        ));
+      await _auth.signInWithCredential(credential);
+      // ignore: use_build_context_synchronously
+      snackbar(context, 'OTP Verified Successfully', color: Colors.green);
+      // ignore: use_build_context_synchronously
+      pushNavigation(
+          context,
+          Dashboard(
+            data: 'Phone Verified Dashboard',
+          ));
+    } on FirebaseAuthException catch (e) {
+      snackbar(context, e.message!, color: Colors.red);
+    }
   }
 
   //Facebook Sign In
@@ -59,13 +62,13 @@ class FirebaseAuthMethods {
           FacebookAuthProvider.credential(loginResult.accessToken!.token);
       await _auth.signInWithCredential(facebookAuthCredential);
       // ignore: use_build_context_synchronously
-      navigation(context, const FacebookDashboard());
+      navigation(context, Dashboard(data: 'facebook'));
     } on FirebaseAuthException catch (e) {
       snackbar(context, e.message!);
     }
   }
 
-  void facebookLogOut(BuildContext context) async {
+  void logOut(BuildContext context) async {
     await FacebookAuth.instance.logOut();
     await FirebaseAuth.instance.signOut();
     // ignore: use_build_context_synchronously

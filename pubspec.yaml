@@ -38,6 +38,7 @@ dependencies:
   firebase_auth: ^3.9.0
   flutter_facebook_auth: ^4.4.1+1
   sms_autofill: ^2.2.0
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

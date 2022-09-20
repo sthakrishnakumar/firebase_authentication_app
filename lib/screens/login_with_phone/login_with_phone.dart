@@ -27,7 +27,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
 
   void phoneSignIn() {
     FirebaseAuthMethods(FirebaseAuth.instance)
-        .phoneSignIn(context, phoneController.text);
+        .phoneSignIn(context, '+977${phoneController.text}');
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_authentication_app/services/firebase_auth_methods.dart';
-import 'package:firebase_authentication_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
@@ -13,6 +12,7 @@ class OTPpage extends StatefulWidget {
 
 class _OTPpageState extends State<OTPpage> {
   String codeValue = "";
+  bool isLoading = false;
 
   void verifyOTP() {
     FirebaseAuthMethods(FirebaseAuth.instance).verifyOTP(context, codeValue);
@@ -35,6 +35,7 @@ class _OTPpageState extends State<OTPpage> {
         title: const Text('OTP Page'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           PinFieldAutoFill(
             currentCode: codeValue,
@@ -54,16 +55,20 @@ class _OTPpageState extends State<OTPpage> {
           const SizedBox(
             height: 20,
           ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                verifyOTP();
-              } on FirebaseAuthException catch (e) {
-                snackbar(context, e.message!, color: Colors.red);
-              }
-            },
-            child: const Text('Verify OTP'),
-          ),
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    verifyOTP();
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
+                  child: const Text('Verify OTP'),
+                ),
         ],
       ),
     );

@@ -54,8 +54,7 @@ class _FacebookDashboardState extends State<FacebookDashboard> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    FirebaseAuthMethods(FirebaseAuth.instance)
-                        .facebookLogOut(context);
+                    FirebaseAuthMethods(FirebaseAuth.instance).logOut(context);
                   },
                   child: const Text('Log Out'),
                 ),
