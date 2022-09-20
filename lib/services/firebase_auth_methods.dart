@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_authentication_app/screens/dashboard.dart';
 import 'package:firebase_authentication_app/screens/login_screen.dart';
 import 'package:firebase_authentication_app/screens/login_with_phone/otp_page.dart';
+import 'package:firebase_authentication_app/auth/local_db.dart';
 import 'package:firebase_authentication_app/utils/utils.dart';
 import 'package:firebase_authentication_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +43,9 @@ class FirebaseAuthMethods {
       await _auth.signInWithCredential(credential);
       // ignore: use_build_context_synchronously
       snackbar(context, 'OTP Verified Successfully', color: Colors.green);
+      DbClient().setData(dbKey: 'auth', value: 'phone');
       // ignore: use_build_context_synchronously
-      pushNavigation(
-          context,
-          Dashboard(
-            data: 'Phone Verified Dashboard',
-          ));
+      pushNavigation(context, Dashboard());
     } on FirebaseAuthException catch (e) {
       snackbar(context, e.message!, color: Colors.red);
     }
@@ -61,14 +59,17 @@ class FirebaseAuthMethods {
       final OAuthCredential facebookAuthCredential =
           FacebookAuthProvider.credential(loginResult.accessToken!.token);
       await _auth.signInWithCredential(facebookAuthCredential);
+
+      DbClient().setData(dbKey: 'auth', value: 'facebook');
       // ignore: use_build_context_synchronously
-      navigation(context, Dashboard(data: 'facebook'));
+      navigation(context, Dashboard());
     } on FirebaseAuthException catch (e) {
       snackbar(context, e.message!);
     }
   }
 
   void logOut(BuildContext context) async {
+    DbClient().reset();
     await FacebookAuth.instance.logOut();
     await FirebaseAuth.instance.signOut();
     // ignore: use_build_context_synchronously
