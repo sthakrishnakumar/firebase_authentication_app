@@ -1,15 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_authentication_app/screens/facebook_logged_in_dashboard.dart';
+import 'package:firebase_authentication_app/screens/login_with_facebook/facebook_logged_in_dashboard.dart';
 import 'package:firebase_authentication_app/screens/login_screen.dart';
+import 'package:firebase_authentication_app/screens/login_with_google/google_loggedIn_dashboard.dart';
+import 'package:firebase_authentication_app/screens/login_with_phone/phone_loggedin_dashboard.dart';
 import 'package:firebase_authentication_app/services/firebase_auth_methods.dart';
 import 'package:flutter/material.dart';
 
 import '../auth/local_db.dart';
 
 class Dashboard extends StatefulWidget {
-  Dashboard({Key? key, this.data = 'Dashboard'}) : super(key: key);
-
-  String data;
+  const Dashboard({Key? key}) : super(key: key);
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -33,29 +33,13 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.data),
-      ),
-      body: type == "facebook"
+      body: type == "Facebook"
           ? const FacebookDashboard()
-          : type == 'phone'
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 90),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Phone Verified Dashboard'),
-                      ElevatedButton(
-                        onPressed: () {
-                          FirebaseAuthMethods(FirebaseAuth.instance)
-                              .logOut(context);
-                        },
-                        child: const Text('Log Out'),
-                      )
-                    ],
-                  ),
-                )
-              : const LoginScreen(),
+          : type == 'Phone'
+              ? const PhoneDashboard()
+              : type == 'Google'
+                  ? const GoogleDashboard()
+                  : const LoginScreen(),
     );
   }
 }

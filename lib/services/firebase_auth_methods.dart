@@ -7,6 +7,7 @@ import 'package:firebase_authentication_app/utils/utils.dart';
 import 'package:firebase_authentication_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthMethods {
   final FirebaseAuth _auth;
@@ -43,11 +44,31 @@ class FirebaseAuthMethods {
       await _auth.signInWithCredential(credential);
       // ignore: use_build_context_synchronously
       snackbar(context, 'OTP Verified Successfully', color: Colors.green);
-      DbClient().setData(dbKey: 'auth', value: 'phone');
+      DbClient().setData(dbKey: 'auth', value: 'Phone');
       // ignore: use_build_context_synchronously
-      pushNavigation(context, Dashboard());
+      pushNavigation(context, const Dashboard());
     } on FirebaseAuthException catch (e) {
       snackbar(context, e.message!, color: Colors.red);
+    }
+  }
+
+//Google Sign In
+  Future<void> signInWithGoogle(BuildContext context) async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      if (googleAuth?.accessToken != null && googleAuth?.idToken != null) {
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
+        UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+      }
+    } on FirebaseAuthException catch (e) {
+      snackbar(context, e.message!);
     }
   }
 
@@ -60,9 +81,9 @@ class FirebaseAuthMethods {
           FacebookAuthProvider.credential(loginResult.accessToken!.token);
       await _auth.signInWithCredential(facebookAuthCredential);
 
-      DbClient().setData(dbKey: 'auth', value: 'facebook');
+      DbClient().setData(dbKey: 'auth', value: 'Facebook');
       // ignore: use_build_context_synchronously
-      navigation(context, Dashboard());
+      navigation(context, const Dashboard());
     } on FirebaseAuthException catch (e) {
       snackbar(context, e.message!);
     }
