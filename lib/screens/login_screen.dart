@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_authentication_app/screens/facebook_logged_in_dashboard.dart';
+import 'package:firebase_authentication_app/screens/dashboard.dart';
+import 'package:firebase_authentication_app/screens/login_with_phone/login_with_phone.dart';
 import 'package:firebase_authentication_app/services/firebase_auth_methods.dart';
+import 'package:firebase_authentication_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -16,23 +18,25 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // const SizedBox(
-            //   height: 20,
-            // ),
-            // ElevatedButton(
-            //   onPressed: () {},
-            //   child: const Text('Sign In With Phone'),
-            // ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
-            // ElevatedButton(
-            //   onPressed: () {},
-            //   child: const Text('Sign In With Google'),
-            // ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                navigation(context, const LoginWithPhone());
+              },
+              child: const Text('Sign In With Phone'),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('Sign In With Google'),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
               onPressed: () {
                 FirebaseAuthMethods(FirebaseAuth.instance)
@@ -66,7 +70,7 @@ class HomePage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasData) {
-            return const FacebookDashboard();
+            return Dashboard();
           } else if (snapshot.hasError) {
             return Center(
               child: Text(snapshot.error.toString()),

@@ -32,49 +32,44 @@ class _FacebookDashboardState extends State<FacebookDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Facebook Dashboard'),
-      ),
-      body: FutureBuilder<UserModel>(
-        future: userData,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text('Name: ${snapshot.data!.name}'),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text('Email: ${snapshot.data!.email}'),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      FirebaseAuthMethods(FirebaseAuth.instance)
-                          .logout(context);
-                    },
-                    child: const Text('Log Out'),
-                  ),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return const Text('Something Went Wrong');
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+    return FutureBuilder<UserModel>(
+      future: userData,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                Text('Name: ${snapshot.requireData.name}'),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text('Email: ${snapshot.requireData.email}'),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    FirebaseAuthMethods(FirebaseAuth.instance)
+                        .facebookLogOut(context);
+                  },
+                  child: const Text('Log Out'),
+                ),
+              ],
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return const Text('Something Went Wrong');
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }

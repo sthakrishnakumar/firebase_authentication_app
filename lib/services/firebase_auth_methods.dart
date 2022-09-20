@@ -1,14 +1,54 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_authentication_app/screens/dashboard.dart';
 import 'package:firebase_authentication_app/screens/facebook_logged_in_dashboard.dart';
 import 'package:firebase_authentication_app/screens/login_screen.dart';
+import 'package:firebase_authentication_app/screens/login_with_phone/otp_page.dart';
 import 'package:firebase_authentication_app/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_authentication_app/widgets/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class FirebaseAuthMethods {
   final FirebaseAuth _auth;
 
   FirebaseAuthMethods(this._auth);
+
+//Phone Sign In
+
+  Future<void> phoneSignIn(BuildContext context, String phoneNumber) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (e) {
+        snackbar(context, e.message!);
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        WidgetConstant.verify = verificationId;
+        pushNavigation(context, const OTPpage());
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
+
+//Verify OTP
+  Future<void> verifyOTP(BuildContext context, String codeValue) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: WidgetConstant.verify,
+      smsCode: codeValue,
+    );
+
+    await _auth.signInWithCredential(credential);
+    // ignore: use_build_context_synchronously
+    snackbar(context, 'OTP Verified Successfully', color: Colors.green);
+    // ignore: use_build_context_synchronously
+    pushNavigation(
+        context,
+        Dashboard(
+          data: 'Phone Verified Dashboard',
+        ));
+  }
 
   //Facebook Sign In
   Future<void> signInWithFacebook(BuildContext context) async {
@@ -25,7 +65,7 @@ class FirebaseAuthMethods {
     }
   }
 
-  void logout(BuildContext context) async {
+  void facebookLogOut(BuildContext context) async {
     await FacebookAuth.instance.logOut();
     await FirebaseAuth.instance.signOut();
     // ignore: use_build_context_synchronously
