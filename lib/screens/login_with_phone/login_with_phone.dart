@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class LoginWithPhone extends StatefulWidget {
   const LoginWithPhone({Key? key}) : super(key: key);
+  static String verify = "";
 
   @override
   State<LoginWithPhone> createState() => _LoginWithPhoneState();
@@ -48,6 +49,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             children: [
               TextFormField(
                 controller: phoneController,
+                keyboardType: TextInputType.phone,
                 validator: (phone) {
                   return phoneController.text.length == 10
                       ? null
@@ -57,7 +59,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                 decoration: const InputDecoration(
                   counterText: "",
                   hintText: 'Enter Phone Number',
-                  prefix: Text('+977'),
+                  prefix: Text('+977 '),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -75,7 +77,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                             isLoading = true;
                           });
                           phoneSignIn();
-                          Timer(const Duration(seconds: 5), () {
+                          Timer(const Duration(seconds: 8), () {
                             setState(() {
                               isLoading = false;
                             });

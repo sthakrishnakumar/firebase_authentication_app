@@ -1,15 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_authentication_app/screens/login_with_facebook/facebook_logged_in_dashboard.dart';
 import 'package:firebase_authentication_app/screens/login_screen.dart';
 import 'package:firebase_authentication_app/screens/login_with_google/google_loggedIn_dashboard.dart';
 import 'package:firebase_authentication_app/screens/login_with_phone/phone_loggedin_dashboard.dart';
-import 'package:firebase_authentication_app/services/firebase_auth_methods.dart';
 import 'package:flutter/material.dart';
 
 import '../auth/local_db.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key}) : super(key: key);
+  const Dashboard({Key? key, this.phone = ""}) : super(key: key);
+  final String phone;
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -36,7 +35,9 @@ class _DashboardState extends State<Dashboard> {
       body: type == "Facebook"
           ? const FacebookDashboard()
           : type == 'Phone'
-              ? const PhoneDashboard()
+              ? PhoneDashboard(
+                  number: widget.phone,
+                )
               : type == 'Google'
                   ? const GoogleDashboard()
                   : const LoginScreen(),
