@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_authentication_app/services/firebase_auth_methods.dart';
@@ -37,7 +36,6 @@ class _OTPpageState extends State<OTPpage> {
 
   @override
   Widget build(BuildContext context) {
-    log(widget.phoneNumber);
     return Scaffold(
       appBar: AppBar(
         title: const Text('OTP Page'),
@@ -45,39 +43,31 @@ class _OTPpageState extends State<OTPpage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          PinFieldAutoFill(
-            currentCode: codeValue,
-            decoration: const UnderlineDecoration(
-              colorBuilder: FixedColorBuilder(Colors.grey),
-              textStyle: TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
+          const Text('Enter OTP'),
+          const SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: PinFieldAutoFill(
+              currentCode: codeValue,
+              decoration: const UnderlineDecoration(
+                colorBuilder: FixedColorBuilder(Colors.grey),
+                textStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20,
+                ),
               ),
+              onCodeChanged: (code) {
+                setState(() {
+                  codeValue = code.toString();
+                });
+              },
             ),
-            onCodeChanged: (code) {
-              setState(() {
-                codeValue = code.toString();
-              });
-            },
           ),
           const SizedBox(
             height: 20,
           ),
-          // canResendOTP
-          //     ? InkWell(
-          //         onTap: () {
-          //           FirebaseAuthMethods(FirebaseAuth.instance)
-          //               .resendOTP(context, widget.phoneNumber);
-          //           setState(() {
-          //             canResendOTP = false;
-          //           });
-          //         },
-          //         child: const Text('Resend OTP'),
-          //       )
-          //     : const Text(''),
-          // const SizedBox(
-          //   height: 20,
-          // ),
           isLoading
               ? const Center(child: CircularProgressIndicator())
               : ElevatedButton(
@@ -85,14 +75,11 @@ class _OTPpageState extends State<OTPpage> {
                     setState(() {
                       isLoading = true;
                     });
+                    verifyOTP();
                     Timer(const Duration(seconds: 2), () {
                       setState(() {
-                        canResendOTP = true;
+                        isLoading = false;
                       });
-                    });
-                    verifyOTP();
-                    setState(() {
-                      isLoading = false;
                     });
                   },
                   child: const Text('Verify OTP'),

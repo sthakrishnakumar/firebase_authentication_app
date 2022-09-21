@@ -67,13 +67,14 @@ class FirebaseAuthMethods {
         verificationId: LoginWithPhone.verify,
         smsCode: codeValue,
       );
-
+      DbClient().setData(dbKey: 'phoneNumber', value: phoneNumber);
+      DbClient().setData(dbKey: 'auth', value: 'Phone');
       await _auth.signInWithCredential(credential);
       // ignore: use_build_context_synchronously
       snackbar(context, 'OTP Verified Successfully', color: Colors.green);
-      DbClient().setData(dbKey: 'auth', value: 'Phone');
+
       // ignore: use_build_context_synchronously
-      pushNavigation(context, Dashboard(phone: phoneNumber));
+      pushNavigation(context, const Dashboard());
     } on FirebaseAuthException catch (e) {
       snackbar(context, e.message!, color: Colors.red);
     }

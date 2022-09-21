@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import '../auth/local_db.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key, this.phone = ""}) : super(key: key);
-  final String phone;
+  const Dashboard({Key? key}) : super(key: key);
+  
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -35,9 +35,7 @@ class _DashboardState extends State<Dashboard> {
       body: type == "Facebook"
           ? const FacebookDashboard()
           : type == 'Phone'
-              ? PhoneDashboard(
-                  number: widget.phone,
-                )
+              ? const PhoneDashboard()
               : type == 'Google'
                   ? const GoogleDashboard()
                   : const LoginScreen(),

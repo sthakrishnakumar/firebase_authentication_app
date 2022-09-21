@@ -1,11 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../auth/local_db.dart';
 import '../../services/firebase_auth_methods.dart';
 
-class PhoneDashboard extends StatelessWidget {
-  const PhoneDashboard({Key? key, required this.number}) : super(key: key);
-  final String number;
+class PhoneDashboard extends StatefulWidget {
+  const PhoneDashboard({Key? key}) : super(key: key);
+
+  @override
+  State<PhoneDashboard> createState() => _PhoneDashboardState();
+}
+
+class _PhoneDashboardState extends State<PhoneDashboard> {
+  String number = "";
+  Future data() async {
+    String result = await DbClient().getData(dbKey: 'phoneNumber');
+    setState(() {
+      number = result;
+    });
+  }
+
+  @override
+  void initState() {
+    data();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
