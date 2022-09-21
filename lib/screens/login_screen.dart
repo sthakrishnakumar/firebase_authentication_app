@@ -31,7 +31,10 @@ class LoginScreen extends StatelessWidget {
               height: 20,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                FirebaseAuthMethods(FirebaseAuth.instance)
+                    .signInWithGoogle(context);
+              },
               child: const Text('Sign In With Google'),
             ),
             const SizedBox(
@@ -70,7 +73,7 @@ class HomePage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasData) {
-            return Dashboard();
+            return const Dashboard();
           } else if (snapshot.hasError) {
             return Center(
               child: Text(snapshot.error.toString()),

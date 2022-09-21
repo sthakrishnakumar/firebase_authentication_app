@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_authentication_app/services/firebase_auth_methods.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ class LoginWithPhone extends StatefulWidget {
 class _LoginWithPhoneState extends State<LoginWithPhone> {
   late TextEditingController phoneController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -61,14 +64,26 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
               const SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    phoneSignIn();
-                  }
-                },
-                child: const Text('Send OTP'),
-              ),
+              isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          phoneSignIn();
+                          Timer(const Duration(seconds: 5), () {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          });
+                        }
+                      },
+                      child: const Text('Send OTP'),
+                    ),
             ],
           ),
         ),

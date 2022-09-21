@@ -55,18 +55,28 @@ class FirebaseAuthMethods {
 //Google Sign In
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+        scopes: <String>["email"],
+      ).signIn();
 
-      if (googleAuth?.accessToken != null && googleAuth?.idToken != null) {
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth?.accessToken,
-          idToken: googleAuth?.idToken,
-        );
-        UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
-      }
+      //obtain auth details from request
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+
+      //create new credential
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+// once signed in , return the UserCredential
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      DbClient().setData(dbKey: 'auth', value: 'Google');
+      // ignore: use_build_context_synchronously
+      navigation(context, const Dashboard());
     } on FirebaseAuthException catch (e) {
       snackbar(context, e.message!);
     }
@@ -91,6 +101,7 @@ class FirebaseAuthMethods {
 
   void logOut(BuildContext context) async {
     DbClient().reset();
+    await GoogleSignIn().signOut();
     await FacebookAuth.instance.logOut();
     await FirebaseAuth.instance.signOut();
     // ignore: use_build_context_synchronously
